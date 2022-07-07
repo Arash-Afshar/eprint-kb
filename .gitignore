@@ -1,0 +1,7 @@
+gin-bin.swp
+config/production.yaml
+build/
+mpc-kb
+gin-bin
+secrets
+.vscode
