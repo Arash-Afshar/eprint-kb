@@ -5,31 +5,34 @@ interface AttackProps {
   short: string;
   path: string;
   fixUrls: string[];
+  fixAbbrv: string[];
 }
 
-const Attack: FC<AttackProps> = ({ short, path, fixUrls }: AttackProps) => {
+const Attack: FC<AttackProps> = ({
+  short,
+  path,
+  fixUrls,
+  fixAbbrv,
+}: AttackProps) => {
   return (
     <div>
       <Stack direction="row" spacing="1em">
-        <div style={{ minWidth: 100 }}>
+        <Link href={path} style={{ minWidth: 50 }}>
           <Typography>{short}</Typography>
-        </div>
-        <Link href={path}>
-          <Typography>link</Typography>
         </Link>
-        {fixUrls.length == 0 ? (
-          <div>No reported fix!</div>
-        ) : (
+        {(fixUrls != undefined && fixUrls.length) != 0 ? (
           <Stack direction="row" spacing="1em">
             <Typography>Fixed by</Typography>
             {fixUrls.map((url, index) => {
               return (
-                <Link href={url}>
-                  <Typography>link{index}</Typography>
+                <Link href={url} key={index}>
+                  <Typography>{fixAbbrv[index]}</Typography>
                 </Link>
               );
             })}
           </Stack>
+        ) : (
+          <div>No reported fix!</div>
         )}
       </Stack>
     </div>

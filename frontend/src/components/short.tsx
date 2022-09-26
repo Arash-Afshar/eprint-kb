@@ -10,11 +10,8 @@ const Short: FC<ShortProps> = ({ shortName, path }: ShortProps) => {
   return (
     <div>
       <Stack direction="row" spacing="1em">
-        <div style={{ minWidth: 100 }}>
+        <Link href={path} style={{ minWidth: 50 }}>
           <Typography>{shortName}</Typography>
-        </div>
-        <Link href={path}>
-          <Typography>link</Typography>
         </Link>
       </Stack>
     </div>
