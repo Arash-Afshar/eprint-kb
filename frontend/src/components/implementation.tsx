@@ -20,15 +20,19 @@ const Implementation: FC<ImplementationProps> = ({
             <Typography>{shortName}</Typography>
           </Link>
         </div>
-        <Typography>{language}</Typography>
+        <div style={{ minWidth: 50 }}>
+          <Typography>{language}</Typography>
+        </div>
         <Stack>
           {audits.map((audit, index) => {
             return (
-              <Stack direction="row" key={index} spacing=".5em">
-                <Typography>{audit.version}</Typography>
-                <Typography>{audit.auditor}</Typography>
-                {audit.result}
-              </Stack>
+              <div style={{ minWidth: 200 }}>
+                <Stack direction="row" key={index} spacing=".5em">
+                  <Typography>{audit.version}</Typography>
+                  <Typography>{audit.auditor}</Typography>
+                  {audit.result}
+                </Stack>
+              </div>
             );
           })}
         </Stack>

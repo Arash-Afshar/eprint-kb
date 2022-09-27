@@ -9,7 +9,13 @@ import Tag from "./tag";
 import { eprint } from "./testData";
 import axios from "axios";
 import yaml from "js-yaml";
-import { IEPrintData, IVulnerableToData } from "./types";
+import {
+  IAudit,
+  IEPrintData,
+  IImplementation,
+  IVulnerableToData,
+} from "./types";
+import { BadIcon, GoodIcon, WarningIcon } from "./icons";
 
 const eprintBaseUrl = "https://eprint.iacr.org/";
 
@@ -72,6 +78,43 @@ const EPrint: NextPage = () => {
     return Promise.resolve(vulnerableToMap);
   };
 
+  const parseImplementations = (impls: any[]): IImplementation[] => {
+    const implementations: IImplementation[] = [];
+    const implNames = Object.keys(impls);
+    for (let i = 0; i < implNames.length; i++) {
+      const name = implNames[i];
+      const audits: IAudit[] = [];
+      const auditors = Object.keys(impls[name]["audits"]);
+      for (let j = 0; j < auditors.length; j++) {
+        let result: ReactNode = "N/A";
+        const auditResult = impls[name]["audits"][auditors[i]]["result"];
+        if (auditResult == "passed") {
+          result = <GoodIcon />;
+        } else if (auditResult == "failed") {
+          result = <BadIcon />;
+        } else if (auditResult == "warning") {
+          result = <WarningIcon />;
+        }
+        audits.push({
+          auditor: auditors[i],
+          result: result,
+          version: impls[name]["audits"][auditors[i]]["version"],
+        });
+      }
+      const impl: IImplementation = {
+        shortName: name,
+        url: impls[name]["url"],
+        language: impls[name]["language"],
+        audits: audits,
+        lastCommit: { date: "", hash: "" }, // impls[name]["url"],
+        stars: 0, // impls[name]["url"],
+        forks: 0, // impls[name]["url"],
+      };
+      implementations.push(impl);
+    }
+    return implementations;
+  };
+
   const updateDataWithStaticContent = async (path: string, raw: unknown) => {
     let updatedData: IEPrintData = {
       title: raw["info"]["title"],
@@ -83,7 +126,7 @@ const EPrint: NextPage = () => {
       vulnerableTo: await getVulnerableToInfo(raw["security"]["vulnerableTo"]),
       fixedBy: raw["security"]["fixedBy"], // string array
       attacking: raw["security"]["attacking"], // string array
-      implementations: [],
+      implementations: parseImplementations(raw["implementations"]),
     };
     console.log(updatedData.vulnerableTo);
     setData(updatedData);
@@ -158,7 +201,7 @@ const EPrint: NextPage = () => {
         </Fragment>
       )}
       <SectionHeader title="Reported Implementations" />
-      <Stack>
+      <Stack spacing=".5em">
         {data.implementations.map((impl, index) => {
           return <Implementation impl={impl} key={index} />;
         })}

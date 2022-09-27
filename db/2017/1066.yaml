@@ -20,16 +20,29 @@ security:
     - yyyy/x7
 
 implementations:
-  - dalek:
-      url: "https://github.com/dalek-cryptography/bulletproofs"
-      audits:
-        - auditor-name1:
-            version: v1.0.0
-            result: passed
-        - auditor-name2:
-            version: v1.1.0
-            result: failed
-        - auditor-name3:
-            version: v1.3.0
-            result: warning
-      language: Rust
+  dalek:
+    url: "https://github.com/dalek-cryptography/bulletproofs"
+    audits:
+      auditor-name1:
+        version: v1.0.0
+        result: passed
+      auditor-name2:
+        version: v1.1.0
+        result: failed
+      auditor-name3:
+        version: v1.3.0
+        result: warning
+    language: Rust
+  dalek2:
+    url: "https://github.com/dalek-cryptography/bulletproofs"
+    audits:
+      auditor-name1:
+        version: v1.0.0
+        result: passed
+      auditor-name2:
+        version: v1.1.0
+        result: failed
+      auditor-name3:
+        version: v1.3.0
+        result: warning
+    language: Go
