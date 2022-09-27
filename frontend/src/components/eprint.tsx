@@ -18,6 +18,8 @@ import {
 import { BadIcon, GoodIcon, WarningIcon } from "./icons";
 
 const eprintBaseUrl = "https://eprint.iacr.org/";
+const dbBaseUrl =
+  "https://raw.githubusercontent.com/Arash-Afshar/eprint-kb/main/db/";
 
 const emptyData: IEPrintData = {
   title: "",
@@ -39,7 +41,7 @@ const EPrint: NextPage = () => {
 
   useEffect(() => {
     const path = "2017/1066";
-    axios.get("http://localhost:8003/" + path + ".yaml").then((resp) => {
+    axios.get(dbBaseUrl + path + ".yaml").then((resp) => {
       const parsed = yaml.load(resp.data);
       console.log(parsed);
       updateDataWithStaticContent(path, parsed);
@@ -47,7 +49,7 @@ const EPrint: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    axios.get("http://localhost:8003/abbreviations.yaml").then((resp) => {
+    axios.get(dbBaseUrl + "abbreviations.yaml").then((resp) => {
       const parsed = yaml.load(resp.data);
       setAbbreviationsMap(parsed);
     });
@@ -66,9 +68,7 @@ const EPrint: NextPage = () => {
     let vulnerableToMap: IVulnerableToData = {};
     for (let i = 0; i < paths.length; i++) {
       try {
-        const result = await axios.get(
-          "http://localhost:8003/" + paths[i] + ".yaml"
-        );
+        const result = await axios.get(dbBaseUrl + paths[i] + ".yaml");
         const parsed = yaml.load(result.data);
         vulnerableToMap[paths[i]] = parsed["security"]["fixedBy"];
       } catch (error) {
