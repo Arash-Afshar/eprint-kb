@@ -1,4 +1,6 @@
 info:
+  title: "Bulletproofs: Short Proofs for Confidential Transactions and More"
+  authors: "Benedikt Bünz, Jonathan Bootle, Dan Boneh, Andrew Poelstra, Pieter Wuille, and Greg Maxwell"
   otherAbbreviations:
     - BBBPWM17
 

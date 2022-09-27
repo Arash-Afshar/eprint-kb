@@ -11,6 +11,8 @@ import axios from "axios";
 import yaml from "js-yaml";
 import { IEPrintData, IVulnerableToData } from "./types";
 
+const eprintBaseUrl = "https://eprint.iacr.org/";
+
 const emptyData: IEPrintData = {
   title: "",
   authors: "",
@@ -27,7 +29,7 @@ const emptyData: IEPrintData = {
 const EPrint: NextPage = () => {
   const [data, setData] = useState(emptyData);
   const [abbreviationsMap, setAbbreviationsMap] = useState({});
-  const eprintUrl = "https://eprint.iacr.org/" + data.path;
+  const eprintUrl = eprintBaseUrl + data.path;
 
   useEffect(() => {
     const path = "2017/1066";
@@ -72,8 +74,8 @@ const EPrint: NextPage = () => {
 
   const updateDataWithStaticContent = async (path: string, raw: unknown) => {
     let updatedData: IEPrintData = {
-      title: "",
-      authors: "",
+      title: raw["info"]["title"],
+      authors: raw["info"]["authors"],
       path: path,
       abbreviation: getAbbreviation(path),
       otherAbbreviations: raw["info"]["otherAbbreviations"],
