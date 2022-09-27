@@ -1,0 +1,33 @@
+info:
+  otherAbbreviations:
+    - BBBPWM17
+
+security:
+  securityAssumptions:
+    - Random Oracle
+    - Discrete Logarithm
+  vulnerableTo:
+    - yyyy/x1
+    - yyyy/x5
+  attacking:
+    - yyyy/x2
+    - yyyy/x3
+    - yyyy/x6
+  fixedBy:
+    - yyyy/x4
+    - yyyy/x7
+
+implementations:
+  - dalek:
+      url: "https://github.com/dalek-cryptography/bulletproofs"
+      audits:
+        - auditor-name1:
+            version: v1.0.0
+            result: passed
+        - auditor-name2:
+            version: v1.1.0
+            result: failed
+        - auditor-name3:
+            version: v1.3.0
+            result: warning
+      language: Rust

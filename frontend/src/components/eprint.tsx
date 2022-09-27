@@ -1,17 +1,91 @@
 import { Link, Stack, Typography } from "@mui/material";
 import type { NextPage } from "next";
-import React, { Fragment, ReactNode } from "react";
+import React, { Fragment, ReactNode, useEffect, useState } from "react";
 import Attack from "./attack";
 import Implementation from "./implementation";
 import SectionHeader from "./section_header";
 import Short from "./short";
 import Tag from "./tag";
-import { GoodIcon } from "./icons";
 import { eprint } from "./testData";
+import axios from "axios";
+import yaml from "js-yaml";
+import { IEPrintData, IVulnerableToData } from "./types";
+
+const emptyData: IEPrintData = {
+  title: "",
+  authors: "",
+  path: "",
+  abbreviation: "",
+  otherAbbreviations: [],
+  securityAssumptions: [],
+  vulnerableTo: {},
+  fixedBy: [],
+  attacking: [],
+  implementations: [],
+};
 
 const EPrint: NextPage = () => {
-  const data = eprint;
+  const [data, setData] = useState(emptyData);
+  const [abbreviationsMap, setAbbreviationsMap] = useState({});
   const eprintUrl = "https://eprint.iacr.org/" + data.path;
+
+  useEffect(() => {
+    const path = "2017/1066";
+    axios.get("http://localhost:8003/" + path + ".yaml").then((resp) => {
+      const parsed = yaml.load(resp.data);
+      console.log(parsed);
+      updateDataWithStaticContent(path, parsed);
+    });
+  }, []);
+
+  useEffect(() => {
+    axios.get("http://localhost:8003/abbreviations.yaml").then((resp) => {
+      const parsed = yaml.load(resp.data);
+      setAbbreviationsMap(parsed);
+    });
+  }, []);
+
+  const getAbbreviation = (path: string): string => {
+    if (path in abbreviationsMap) {
+      return abbreviationsMap[path];
+    }
+    return path;
+  };
+
+  const getVulnerableToInfo = async (
+    paths: string[]
+  ): Promise<IVulnerableToData> => {
+    let vulnerableToMap: IVulnerableToData = {};
+    for (let i = 0; i < paths.length; i++) {
+      try {
+        const result = await axios.get(
+          "http://localhost:8003/" + paths[i] + ".yaml"
+        );
+        const parsed = yaml.load(result.data);
+        vulnerableToMap[paths[i]] = parsed["security"]["fixedBy"];
+      } catch (error) {
+        vulnerableToMap[paths[i]] = [];
+      }
+    }
+    return Promise.resolve(vulnerableToMap);
+  };
+
+  const updateDataWithStaticContent = async (path: string, raw: unknown) => {
+    let updatedData: IEPrintData = {
+      title: "",
+      authors: "",
+      path: path,
+      abbreviation: getAbbreviation(path),
+      otherAbbreviations: raw["info"]["otherAbbreviations"],
+      securityAssumptions: raw["security"]["securityAssumptions"],
+      vulnerableTo: await getVulnerableToInfo(raw["security"]["vulnerableTo"]),
+      fixedBy: raw["security"]["fixedBy"], // string array
+      attacking: raw["security"]["attacking"], // string array
+      implementations: [],
+    };
+    console.log(updatedData.vulnerableTo);
+    setData(updatedData);
+  };
 
   return (
     <Stack>
@@ -49,35 +123,31 @@ const EPrint: NextPage = () => {
       </Stack>
       <SectionHeader title="Reported Vulnerabilities" />
       <Stack>
-        {data.vulnerableTo.length == 0 ? (
-          <Typography>N/A</Typography>
-        ) : (
-          data.vulnerableTo.map((src, index) => {
-            return (
-              <Attack
-                short={src.abbreviation}
-                path={src.path}
-                fixUrls={src.fixedBy?.map((fix) => {
-                  return fix.path;
-                })}
-                fixAbbrv={src.fixedBy?.map((fix) => {
-                  return fix.abbreviation;
-                })}
-                key={index}
-              />
-            );
-          })
-        )}
+        {Object.keys(data.vulnerableTo).map((path, index) => {
+          return (
+            <Attack
+              short={getAbbreviation(path)}
+              path={path}
+              fixUrls={data.vulnerableTo[path]?.map((fixPath) => {
+                return fixPath;
+              })}
+              fixAbbrv={data.vulnerableTo[path]?.map((fixPath) => {
+                return getAbbreviation(fixPath);
+              })}
+              key={index}
+            />
+          );
+        })}
       </Stack>
       {data.attacking.length != 0 && (
         <Fragment>
           <SectionHeader title="Affected Work by this Attack" />
           <Stack>
-            {data.attacking.map((src, index) => {
+            {data.attacking.map((path, index) => {
               return (
                 <Short
-                  shortName={src.abbreviation}
-                  path={src.path}
+                  shortName={getAbbreviation(path)}
+                  path={path}
                   key={index}
                 />
               );

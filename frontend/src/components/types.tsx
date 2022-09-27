@@ -26,10 +26,14 @@ export interface IEPrintData {
   authors: string;
   path: string;
   abbreviation: string;
-  otherAbbreviations?: string[];
+  otherAbbreviations: string[];
   securityAssumptions: string[];
-  vulnerableTo?: IEPrintData[];
-  fixedBy?: IEPrintData[];
-  attacking?: IEPrintData[];
-  implementations?: IImplementation[];
+  vulnerableTo: IVulnerableToData;
+  fixedBy: IEPrintData[];
+  attacking: string[];
+  implementations: IImplementation[];
+}
+
+export interface IVulnerableToData {
+  [attackInfo: string]: string[];
 }

@@ -7,6 +7,11 @@ const eprint6: IEPrintData = {
   path: "/2020/6",
   abbreviation: "[a6]",
   securityAssumptions: ["assumption1"],
+  otherAbbreviations: [],
+  vulnerableTo: {},
+  fixedBy: [],
+  attacking: [],
+  implementations: [],
 };
 
 const eprint1: IEPrintData = {
@@ -15,6 +20,11 @@ const eprint1: IEPrintData = {
   path: "/2020/1",
   abbreviation: "[a1]",
   securityAssumptions: ["assumption1"],
+  otherAbbreviations: [],
+  vulnerableTo: {},
+  fixedBy: [],
+  attacking: [],
+  implementations: [],
 };
 
 const eprint2: IEPrintData = {
@@ -23,6 +33,11 @@ const eprint2: IEPrintData = {
   path: "/2020/2",
   abbreviation: "[a2]",
   securityAssumptions: ["assumption1"],
+  otherAbbreviations: [],
+  vulnerableTo: {},
+  fixedBy: [],
+  attacking: [],
+  implementations: [],
 };
 
 const eprint3: IEPrintData = {
@@ -32,6 +47,10 @@ const eprint3: IEPrintData = {
   abbreviation: "[a3]",
   securityAssumptions: ["assumption1"],
   fixedBy: [eprint6],
+  otherAbbreviations: [],
+  vulnerableTo: {},
+  attacking: [],
+  implementations: [],
 };
 
 const eprint4: IEPrintData = {
@@ -40,6 +59,11 @@ const eprint4: IEPrintData = {
   path: "/2020/4",
   abbreviation: "[a4]",
   securityAssumptions: ["assumption1"],
+  otherAbbreviations: [],
+  vulnerableTo: {},
+  fixedBy: [],
+  attacking: [],
+  implementations: [],
 };
 
 const eprint5: IEPrintData = {
@@ -48,6 +72,11 @@ const eprint5: IEPrintData = {
   path: "/2020/5",
   abbreviation: "[a5]",
   securityAssumptions: ["assumption1"],
+  otherAbbreviations: [],
+  vulnerableTo: {},
+  fixedBy: [],
+  attacking: [],
+  implementations: [],
 };
 
 export const eprint: IEPrintData = {
@@ -58,8 +87,8 @@ export const eprint: IEPrintData = {
   abbreviation: "Bulletproof",
   otherAbbreviations: ["BBBPWM17"],
   securityAssumptions: ["Random Oracle", "Discrete Logarithm"],
-  vulnerableTo: [eprint3, eprint4],
-  attacking: [eprint1, eprint2],
+  vulnerableTo: { "2022/3": [], "2022/4": ["2022/6"] },
+  attacking: ["2022/1", "2022/2"],
   fixedBy: [eprint5],
   implementations: [
     {
