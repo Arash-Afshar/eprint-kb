@@ -1,22 +1,17 @@
-console.log('This is the background page.');
-console.log('Put the background scripts here.');
-export { }
+export {};
 /** Fired when the extension is first installed,
  *  when the extension is updated to a new version,
  *  and when Chrome is updated to a new version. */
 chrome.runtime.onInstalled.addListener((details) => {
-    console.log('[background.js] onInstalled', details);
-    //alert('[background.js] onInstalled');
+  console.log('[background.js] onInstalled', details);
 });
 
 chrome.runtime.onConnect.addListener((port) => {
-    console.log('[background.js] onConnect', port)
-    //alert('[background.js] onInstalled');
+  console.log('[background.js] onConnect', port);
 });
 
 chrome.runtime.onStartup.addListener(() => {
-    console.log('[background.js] onStartup')
-    //alert('[background.js] onInstalled');
+  console.log('[background.js] onStartup');
 });
 
 /**
@@ -29,6 +24,5 @@ chrome.runtime.onStartup.addListener(() => {
  *  unloaded the onSuspendCanceled event will
  *  be sent and the page won't be unloaded. */
 chrome.runtime.onSuspend.addListener(() => {
-    console.log('[background.js] onSuspend')
-    //alert('[background.js] onSuspend');
+  console.log('[background.js] onSuspend');
 });
