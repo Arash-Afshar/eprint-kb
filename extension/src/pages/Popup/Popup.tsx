@@ -3,42 +3,29 @@ import { ChromeMessage, Sender } from '../types';
 import { getCurrentTabUId, getCurrentTabUrl } from '../utils';
 
 const Popup = () => {
-  const [url, setUrl] = useState<string>('');
-  const [responseFromContent, setResponseFromContent] = useState<string>('');
+  const [onIACR, setOnIACR] = useState<boolean>(false);
 
   /**
    * Get current URL
    */
   useEffect(() => {
     getCurrentTabUrl((url) => {
-      setUrl(url || 'undefined');
+      if (url !== undefined) {
+        setOnIACR(url.startsWith('https://eprint.iacr.org/'));
+      }
     });
   }, []);
 
   const sendTestMessage = () => {
     const message: ChromeMessage = {
       from: Sender.React,
-      message: 'Hello from React',
+      message: 'modify',
     };
 
     getCurrentTabUId((id) => {
       id &&
         chrome.tabs.sendMessage(id, message, (responseFromContentScript) => {
-          setResponseFromContent(responseFromContentScript);
-        });
-    });
-  };
-
-  const sendRemoveMessage = () => {
-    const message: ChromeMessage = {
-      from: Sender.React,
-      message: 'delete logo',
-    };
-
-    getCurrentTabUId((id) => {
-      id &&
-        chrome.tabs.sendMessage(id, message, (response) => {
-          setResponseFromContent(response);
+          console.log('response:', responseFromContentScript);
         });
     });
   };
@@ -46,13 +33,11 @@ const Popup = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <p>Home</p>
-        <p>URL:</p>
-        <p>{url}</p>
-        <button onClick={sendTestMessage}>SEND MESSAGE</button>
-        <button onClick={sendRemoveMessage}>Remove logo</button>
-        <p>Response from content:</p>
-        <p>{responseFromContent}</p>
+        {onIACR ? (
+          <button onClick={sendTestMessage}>Modify Page</button>
+        ) : (
+          <div>The extension only works on IACR eprint website!</div>
+        )}
       </header>
     </div>
   );
